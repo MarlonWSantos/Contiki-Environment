@@ -3,7 +3,7 @@
 #
 #
 #   Contiki Environment prepare the local environment to run contiki 
-#   Copyright (C) 2019 Marlon W. Santos <marlon.santos.santos@icen.ufpa.br>
+#   Copyright (C) 2019,2020 Marlon W. Santos <marlon.santos.santos@icen.ufpa.br>
 #
 #
 #	
@@ -29,12 +29,12 @@ function path_on_file(){
   file_path=`grep -o /.*contiki $path_ListEvents`
 }
 
-	#Busca o path do diretório local
+ #Busca o path do diretório local
 function find_local_path(){
   local_path=`pwd`
 }
 
-	#Muda o path do arquivo List Events pelo diretório atual
+ #Muda o path do arquivo List Events pelo diretório atual
 function change_path(){
   sed -i "s;$file_path;$local_path;g" $path_ListEvents
 }
@@ -45,6 +45,39 @@ function install_submodules(){
 }
 
 
+ #Baixa o mps430
+function download_mps403(){
+ git clone https://github.com/MarlonWSantos/msp430-gcc-4.7.3.git
+}
+
+ #Extrai o conteúdo do msp430
+function unzip_file(){
+ cd msp430-gcc-4.7.3/ &&
+ tar -xvjf mspgcc-4.7.3.tar.bz2
+}
+
+ #Armazena os arquivos
+function save_msp430(){
+ sudo mkdir /opt/compilers/ &&
+ cd msp430-gcc-4.7.3/
+ sudo cp -R mspgcc-4.7.3/ /opt/compilers/
+}
+
+ #Adiciona atalhos ao bashrc
+function create_alias(){
+ cd .. &&
+ echo "export PATH=$PATH:/opt/compilers/mspgcc-4.7.3/bin/" >> ~/.bashrc &&
+ echo "alias cooja='cd `pwd`/tools/cooja && ant run'" >> ~/.bashrc &&
+ echo "alias tunslip6='cd `pwd`/tools && sudo ./tunslip6 -a 127.0.0.1 aaaa::1/64'" >> ~/.bashrc &&
+ source ~/.bashrc
+}
+
+ #Instalando dependências
+function install_dependences(){
+ sudo apt install ant &&
+ sudo apt install openjdk-8-jdk
+}
+
   #Chamadas para as funções
 path_on_file
 
@@ -54,3 +87,12 @@ change_path
 
 install_submodules
 
+download_mps430
+
+unzip_file
+
+save_msp430
+
+create_alias
+
+install_dependences
