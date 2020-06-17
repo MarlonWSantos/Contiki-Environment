@@ -46,7 +46,7 @@ function install_submodules(){
 
 
  #Baixa o mps430
-function download_mps403(){
+function download_mps430(){
  git clone https://github.com/MarlonWSantos/msp430-gcc-4.7.3.git
 }
 
@@ -59,13 +59,20 @@ function unzip_file(){
  #Armazena os arquivos
 function save_msp430(){
  sudo mkdir /opt/compilers/ &&
- cd msp430-gcc-4.7.3/
  sudo cp -R mspgcc-4.7.3/ /opt/compilers/
+ cd ..
 }
+
+ #Compila o tunslip6.c e gera o binário
+function compile_tunslip6(){
+ cd tools/
+ make tunslip6
+ cd ..
+}
+
 
  #Adiciona atalhos ao bashrc
 function create_alias(){
- cd .. &&
  echo "export PATH=$PATH:/opt/compilers/mspgcc-4.7.3/bin/" >> ~/.bashrc &&
  echo "alias cooja='cd `pwd`/tools/cooja && ant run'" >> ~/.bashrc &&
  echo "alias tunslip6='cd `pwd`/tools && sudo ./tunslip6 -a 127.0.0.1 aaaa::1/64'" >> ~/.bashrc &&
@@ -92,6 +99,8 @@ download_mps430
 unzip_file
 
 save_msp430
+
+compile_tunslip6
 
 create_alias
 
